@@ -1,5 +1,6 @@
 package com.deepakrohan.cointicker.config;
 
+import com.deepakrohan.cointicker.service.FetchService;
 import com.deepakrohan.cointicker.tasks.CoinProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -13,13 +14,21 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @EnableBatchProcessing
 public class JobConfig {
+
+    @Autowired
+    private FetchService fetchService;
+
+    @Autowired
+    private ApplicationContext appContext;
 
     @Autowired
     private JobBuilderFactory jobBuilderFactory;
@@ -37,7 +46,7 @@ public class JobConfig {
     @Bean
     public Step startCoinDetailsFetcher() {
         return stepBuilderFactory.get("coinProcessor")
-                .tasklet(new CoinProcessor())
+                .tasklet(new CoinProcessor(fetchService))
                 .build();
     }
 
