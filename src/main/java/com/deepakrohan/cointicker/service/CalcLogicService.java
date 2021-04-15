@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * TODO Later this houses multiple strategies
@@ -23,6 +24,9 @@ public class CalcLogicService {
 
     @Autowired
     private CoinPricesRepo coinPricesRepo;
+
+    @Autowired
+    private PushMessageService pushMessageService;
 
     public CoinPriceDto getTheDetailsToSave(String coinName, Double coinValue) {
         Optional<Coin> coin = coinRepo.findByCoinName(coinName);
@@ -69,6 +73,8 @@ public class CalcLogicService {
             coinPriceDto.setLstUpdt(date);
 
         }
+
+//        pushMessageService.sendMessageToQueue("Check this message");
 
         return coinPriceDto;
     }
